@@ -100,21 +100,52 @@
 //   console.log(song);
 // });
 
+// var SongView = Backbone.View.extend({
+//   tagName: "span",
+//   className: "song",
+//   id: "1234",
+//   attributes: {
+//     "data-genre": "Jazz",
+//   },
+//   render: function () {
+//     this.$el.html("Hello World");
+//     return this;
+//   },
+// });
+// var songView = new SongView({ el: "#container" });
+// var songView = new SongView();
+// songView.render();
+// $("#container").html(songView.$el);
+
+var Song = Backbone.Model.extend();
+
+var Songs = Backbone.Collection.extend({
+  model: Song,
+});
+
 var SongView = Backbone.View.extend({
-  tagName: "span",
-  className: "song",
-  id: "1234",
-  attributes: {
-    "data-genre": "Jazz",
-  },
+  tagName: 'li',
   render: function () {
-    this.$el.html("Hello World");
+    this.$el.html(this.model.get('title'));
     return this;
   },
 });
 
-// var songView = new SongView({ el: "#container" });
-var songView = new SongView();
-songView.render();
+var SongsView = Backbone.View.extend({
+  render: function () {
+    var self = this;
+    this.model.each(function (song) {
+      var songView = new SongView({ model: song });
+      self.$el.append(songView.render().$el);
+    });
+  },
+});
 
-$("#container").html(songView.$el);
+var songs = new Songs([
+  new Song({ title: 'Blue in Green' }),
+  new Song({ title: 'So What' }),
+  new Song({ title: 'All Blues' }),
+]);
+
+var songsView = new SongsView({ el: '#container', model: songs });
+songsView.render();
